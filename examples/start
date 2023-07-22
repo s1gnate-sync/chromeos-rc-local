@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -eu
+exec &>> /tmp/local-init.log
+
+# Tmp folder for cases when /tmp is too restrictive
+rm -fr /usr/local/tmp
+mkdir /usr/local/tmp
+chown 1000:1000 /usr/local/tmp
+chmod 777 /usr/local/tmp
+
+# Remounting user home with exec and symfollow so symlinks and runnable commands inside .config or .local won't fail 
+mount -o remount,exec,symfollow /home/chronos
+mount -o remount,exec,symfollow /home/chronos/user
+
+# Fix permissions for XDG_RUNTIME_DIR
+[ -d /run/chrome ] && {
+        chmod 700 /run/chrome
+        chown 1000:1000 /run/chrome
+}
+
+# Bind-mount /nix folder so it would be writable on ro rootfs
+[ -d /nix ] && mount --bind /usr/local/nix /nix
