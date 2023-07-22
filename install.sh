@@ -4,7 +4,7 @@
 set -eux
 
 [ "$(id -u)" = 0 ] || {
-  echo "$0: must be superuser to remove rootfs verification"
+  echo "$0: must be superuser"
   exit 1
 }
 
